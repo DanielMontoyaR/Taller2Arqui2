@@ -1,0 +1,15 @@
+/* This function counts how many times the 
+character char_x appears in the string str 
+up to position M-1. */
+
+FUNCTION occurrences(str, char_x, M):
+    INITIALIZE counter = 0
+    
+    FOR i FROM 0 TO M - 1 DO:
+        IF str[i] == char_x THEN:
+            INCREMENT counter BY 1
+        END IF
+    END FOR
+    
+    RETURN counter
+END FUNCTION

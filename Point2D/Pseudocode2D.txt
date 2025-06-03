@@ -1,0 +1,23 @@
+Inputs: str[M]         // Character string of length M
+        char_x         // Character to search for
+Output: count_total    // Number of times char_x appears
+
+1. Initialize count_total = 0
+2. Create vect_x = _mm_replicate_epi8(char_x)   // intrinsic created in 2B
+
+3. iter = 0
+4. While iter + 15 < M do:
+      a. Load 16 bytes: vect_y = _mm_loadu_si128(&str[iter])
+      b. Compare vectors: cmp = _mm_cmpequal_epi8(vect_x, vect_y) // intrinsic created in 2C
+      c. Get bitmask: mask = get_mask(cmp)
+      d. Count '1' bits: count = count_ones(mask)
+      e. Add to total: count_total = count_total + count
+      f. Advance iter = iter + 16
+
+5. // Handle remainder (safe case)
+6. While iter < M do:
+      a. If str[iter] == char_x then:
+            i. count_total = count_total + 1
+      b. iter = iter + 1
+
+7. Return count_total
