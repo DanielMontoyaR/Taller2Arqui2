@@ -12,7 +12,8 @@ size_t contar_ocurrencias_serial(const char* str, char char_x, size_t M) {
 }
 
 int main() {
-    const char* str = "hola;mundo;simd;";
+
+    const char* str = "Aslkadj;skjd;j;0";
     char char_x = ';';
     size_t M = std::strlen(str);
     
