@@ -1,0 +1,11 @@
+FUNCIÓN ocurrencias(str, char_x, M):
+    INICIALIZAR contador = 0
+    
+    PARA i DESDE 0 HASTA M - 1 HACER:
+        SI str[i] == char_x ENTONCES:
+            INCREMENTAR contador EN 1
+        FIN SI
+    FIN PARA
+    
+    RETORNAR contador
+FIN FUNCIÓN

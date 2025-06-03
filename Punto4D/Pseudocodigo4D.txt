@@ -1,0 +1,46 @@
+FUNCION contar_concurrencias_simd(str, char_x_ M):
+
+    INICIALIZAR contador_total = 0
+
+    //Crear vector con char_x replicado
+    vect_x = _mm_set1_epi8(char_x)
+
+    //Calcular iteraciones completas de 16 bytes
+    iteraciones = M / 16
+    iteraciones_residuo = M % 16
+
+    //Procesar bloques de 16 bytes
+    PARA indice DESDE 0 HASTA (iteraciones - 1) HACER:
+        // Cargar con _mm_loadu_si128 porque es más segura que _mm_load_si128 por ser no alineada
+        vect_y = _mm_loadu_si128(str + indice*16)
+
+        // Comparar y generar mascara
+        mascara = _mm_cmpeq_epi8(vect_x, vect_y)
+
+        //Convertir la mascara a bits y contar '0xFF' como 1 y '0x00' como 0
+        bits_1 = _mm_movemask_epi8(mascara)
+        contador_total += popcount(bits_1)
+    
+    FIN PARA
+
+
+    // Procesar residuo de bytes sobrantes
+    IF residuo > 0 ENTONCES:
+
+        //Cargar bytes restantes en un buffer alineado.
+        buffer_alineado[16] = {0}
+        COPIAR str + iteraciones*16 EN buffer_alineado (residuo bytes)
+
+        // Comparar valores
+        vect_y = _mm_load_si128(buffer_alineado)
+        mascara = _mm_cmpeq_epi8(vect_x, vect_y)
+        bits_1 = _mm_movemask_epi8(mascara)
+
+        // Contar bits válidos (máscara)
+        mascara_residuo = (1 << residuo) - 1
+        contador_total += popcount(bits_1 AND mascara_residuo)
+    
+    FIN IF
+
+    RETORNAR contador_total
+FIN FUNCION contar_concurrencias_simd
